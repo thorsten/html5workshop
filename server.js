@@ -29,7 +29,7 @@ app.get('/customers', function (req, res) {
 });
 
 app.get('/orders', function (req, res) {
-    db.all('select * from orders LEFT JOIN customer ON customer.rowid = orders.customer_id LEFT JOIN article ON article.rowid = orders.article_id', function (err, rows) {
+    db.all('select *, customer.name AS cname from orders LEFT JOIN customer ON customer.rowid = orders.customer_id LEFT JOIN article ON article.rowid = orders.article_id order by customer.rowid', function (err, rows) {
         if (err) throw err;
         res.send(rows);
     });
