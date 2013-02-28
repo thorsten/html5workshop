@@ -1,14 +1,30 @@
 <!DOCTYPE html>
+
 <html>
+
 <head>
     <title></title>
 
-    <script language="javascript" type="text/javascript" src="/js/jquery.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/orders.js"></script>
+
+    <script>
+
+        console.log('asdf');
+
+        $(document).ready(function () {
+            var order = new Order();
+            order.getList();
+        });
+
+    </script>
 
 </head>
+
 <body>
 
-    <h1>Hello World</h1>
+    <h1>ACME - Auftragsverwaltung</h1>
 
 </body>
+
 </html>
