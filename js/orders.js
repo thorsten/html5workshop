@@ -1,4 +1,22 @@
-var Order = function () {};
+var Order = function () {
+
+    $('#newCustomer').on('click', this.newCustomer.bind(this));
+    $('#newOrder').on('click', this.newOrder.bind(this));
+    $('#newArticle').on('click', this.newArticle.bind(this));
+
+};
+
+Order.prototype.newCustomer = function () {
+    console.log('newCustomer');
+};
+
+Order.prototype.newOrder = function () {
+    console.log('newOrder');
+};
+
+Order.prototype.newArticle = function () {
+    console.log('newArticle');
+};
 
 
 Order.prototype.getList = function () {
@@ -51,7 +69,17 @@ Order.prototype.writeCustomerName = function (el, data) {
 };
 
 Order.prototype.beginTable = function () {
-    var table = $('<table></table>');
+
+    var header = $('<table cellspacing="0" border="1"><tr>'+
+        '<td>Artikelnummer</td>'+
+        '<td>Artikelbezeichnung</td>'+
+        '<td>Preis/Stück</td>'+
+        '<td>Menge</td>'+
+        '<td>Gesamtpreis</td>'+
+        '</tr></table>');
+
+
+    var table = $(header);
     return table;
 };
 
@@ -60,5 +88,12 @@ Order.prototype.endCustomerSection = function (content, table) {
 };
 
 Order.prototype.addOrder = function (table, data) {
-    table.append('<tr><td>asdf</td></tr>');
+    var order = $('<tr>'+
+        '<td>'+data.article_id+'</td>'+
+        '<td>'+data.name+'</td>'+
+        '<td>'+(data.price /100)+'</td>'+
+        '<td>'+data.amount+'</td>'+
+        '<td>'+(data.price/100*data.amount)+'</td>'+
+        '</tr>');
+    table.append(order);
 };
