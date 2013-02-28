@@ -7,15 +7,28 @@ var Order = function () {
 };
 
 Order.prototype.newCustomer = function () {
-    console.log('newCustomer');
+    $('div#customer').css('display', 'block');
 };
 
 Order.prototype.newOrder = function () {
-    console.log('newOrder');
+    $('div#order').css('display', 'block');
+
+    $.ajax({
+        url: '/articles'
+    }).done(function (data) {
+        
+    });
+
+
+    // fill dropdown
+
+    // handle slider
+
+
 };
 
 Order.prototype.newArticle = function () {
-    console.log('newArticle');
+    $('div#article').toggle();
 };
 
 
