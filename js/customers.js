@@ -20,31 +20,13 @@ Customer.prototype.getList = function () {
 
         this.endTable(contentBox, table);
     }.bind(this));
-
 };
 
 Customer.prototype.newCustomer = function () {
     $('div#customer').css('display', 'block');
 };
 
-
-Customer.prototype.writeCustomerName = function (el, data) {
-    var customer = '<span class="custname">' +
-        data.cname +
-        '</span> ' +
-        '<span class="custadd">'+
-        data.firstname + ' ' +
-        data.surname + ' ' +
-        data.street + ' ' +
-        data.place + ' ' +
-        data.country+
-        '</span>';
-
-    el.append(customer);
-};
-
 Customer.prototype.beginTable = function () {
-
     var header = $('<table cellspacing="0" border="1"><tr>'+
         '<td>Name</td>'+
         '<td>Vorname</td>'+

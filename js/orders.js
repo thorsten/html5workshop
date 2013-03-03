@@ -1,9 +1,6 @@
 var Order = function () {
     $('#newOrder').on('click', this.newOrder.bind(this));
     $('#manageOrder').on('click', this.getList.bind(this));
-
-
-    $('#newArticle').on('click', this.newArticle.bind(this));
 };
 
 
@@ -24,11 +21,6 @@ Order.prototype.newOrder = function () {
 
 
 };
-
-Order.prototype.newArticle = function () {
-    $('div#article').toggle();
-};
-
 
 Order.prototype.getList = function () {
 

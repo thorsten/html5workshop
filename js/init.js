@@ -1,14 +1,11 @@
-var int, customer;
+var int, customer, article, order;
 
 var init = function () {
     "use strict";
 
     customer = new Customer();
-
-
-
-
-    var order = new Order();
+    article = new Article();
+    order = new Order();
     order.getList();
 
     $('#custCancel').on('click', function () {
