@@ -3,8 +3,6 @@ var Order = function () {
     $('#manageOrder').on('click', this.getList.bind(this));
 };
 
-
-
 Order.prototype.newOrder = function () {
     $('div#order').css('display', 'block');
 
@@ -14,12 +12,8 @@ Order.prototype.newOrder = function () {
 
     });
 
-
     // fill dropdown
-
     // handle slider
-
-
 };
 
 Order.prototype.getList = function () {

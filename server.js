@@ -32,6 +32,24 @@ app.get('/articles', function (req, res) {
     });
 });
 
+app.post('/articles', function (req, res) {
+    var data = '';
+
+    req.on('data', function (chunk) {
+        data += chunk;
+    });
+
+    req.on('end', function () {
+        var values = require('querystring').parse(data);
+
+        db.run('INSERT INTO article (name, price) VALUES ( ?, ?)', values.name, values.price, function (err) {
+            if (err) console.log(err);
+            console.log(values);
+            res.end('success');
+        });
+    });
+});
+
 app.get('/customers', function (req, res) {
     db.all('SELECT rowid, * FROM `customer`', function (err, rows) {
         if (err) throw err;

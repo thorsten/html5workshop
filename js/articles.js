@@ -1,6 +1,34 @@
 var Article = function () {
     $('#newArticle').on('click', this.newArticle.bind(this));
     $('#manageArticle').on('click', this.getList.bind(this));
+
+    $('#artCancel').on('click', function () {
+        $('div#article').toggle();
+    });
+
+    $('#artForm').on('submit', this.handleFormSubmit.bind(this));
+};
+
+Article.prototype.handleFormSubmit = function (e) {
+    e.preventDefault();
+
+    var values = {
+        name: $('#artName').val(),
+        price: $('#artPrice').val()
+    };
+
+    $.ajax({
+        url: '/articles',
+        type: 'POST',
+        data: values
+    }).done(function (res) {
+        $('div.popup').hide();
+        $('#content').empty();
+        $('#artForm')[0].reset();
+        order.getList();
+    });
+
+    return false;
 };
 
 Article.prototype.getList = function () {

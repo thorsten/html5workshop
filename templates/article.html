@@ -1,12 +1,17 @@
 <div id="article" class="hidden popup">
     <h1>ARTICLE</h1>
-    <div>
-        Bezeichnung <input type="text" />
-    </div>
-    <div>
-        Preis <input type="number" />
-    </div>
-    <div>
-        <button>speichern</button>
-    </div>
+    <form id="artForm">
+        <div>
+            Bezeichnung <input type="text" id="artName" />
+        </div>
+        <div>
+            Preis <input type="number" id="artPrice" />
+        </div>
+        <div>
+            <div>
+                <input type="submit" id="artSave" />
+                <button id="artCancel">Abbrechen</button>
+            </div>
+        </div>
+    </form>
 </div>
