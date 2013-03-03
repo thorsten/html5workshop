@@ -28,12 +28,18 @@ Order.prototype.handleFormSubmit = function (e) {
     var values = {
         article: $('#orderArt').val(),
         customer: $('#orderCust').val(),
-        amount: $('#orderAmount').val()
+        amount: $('#orderAmount').val(),
+        orderId: $('#orderId').val()
     };
+
+    var type = 'POST';
+    if ($('#orderId').val()) {
+        type = 'PUT';
+    }
 
     $.ajax({
         url: '/orders',
-        type: 'POST',
+        type: type,
         data: values
     }).done(function (res) {
             $('div.popup').hide();
@@ -123,7 +129,7 @@ Order.prototype.orderRow = function (table, data) {
         '<td>'+data.amount+'</td>'+
         '<td>'+(data.price/100*data.amount)+'</td>'+
         '<td><a onclick="order.edit('+data.rowid+')">edit</a></td>'+
-        '<td><a onclick="">delete</a></td>'+
+        '<td><a onclick="order.delete('+data.rowid+')">delete</a></td>'+
         '</tr>');
     table.append(order);
 };
@@ -141,3 +147,13 @@ Order.prototype.edit = function (id) {
         $('#orderAmount').val(data.amount);
     });
 };
+
+Order.prototype.delete = function (id) {
+    $.ajax({
+        url: '/orders/id/' + id,
+        type: 'DELETE'
+    }).done(function (data) {
+        $('#content').empty();
+        order.getList();
+    });
+}

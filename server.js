@@ -49,6 +49,14 @@ app.post('/articles', function (req, res) {
     });
 });
 
+app.get('/articles/id/:id', function (req, res) {
+    var id = req.url.split('/')[3];
+
+    db.get('SELECT rowid, * FROM article WHERE rowid = ?', id, function (err, data) {
+        res.send(data);
+    });
+});
+
 app.get('/customers', function (req, res) {
     db.all('SELECT rowid, * FROM `customer`', function (err, rows) {
         if (err) throw err;
@@ -75,6 +83,14 @@ app.post('/customers', function (req, res) {
 
 app.put('/customers', function (req, res) {
     res.end('lala');
+});
+
+app.get('/customers/id/:id', function (req, res) {
+    var id = req.url.split('/')[3];
+
+    db.get('SELECT rowid, * FROM customer WHERE rowid = ?', id, function (err, data) {
+        res.send(data);
+    });
 });
 
 app.get('/orders', function (req, res) {
@@ -108,6 +124,32 @@ app.post('/orders', function (req, res) {
             if (err) console.log(err);
             res.end('success');
         });
+    });
+});
+
+app.put('/orders', function (req, res) {
+    var data = '';
+
+    req.on('data', function (chunk) {
+        data += chunk;
+    });
+
+    req.on('end', function () {
+        var values = require('querystring').parse(data);
+        console.log(values);
+
+        db.run('UPDATE orders SET article_id = ?, customer_id = ?, amount = ? WHERE rowid = ?', values.article, values.customer, values.amount, values.orderId, function (err) {
+            if (err) console.log(err);
+            res.end('success');
+        });
+    });
+});
+
+app.delete('/orders/id/:id', function (req, res) {
+    var id = req.url.split('/')[3];
+
+    db.run('DELETE FROM orders WHERE rowid = ?', id, function (err, data) {
+        res.send('success');
     });
 });
 
