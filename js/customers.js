@@ -27,6 +27,7 @@ Customer.prototype.saveCustomer = function () {
     }).done(function (res) {
         $('div.popup').hide();
         $('#content').empty();
+        $('#custForm')[0].reset();
         order.getList();
     });
 };
