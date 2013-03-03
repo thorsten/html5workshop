@@ -31,7 +31,7 @@ Article.prototype.handleFormSubmit = function (e) {
         $('div.popup').hide();
         $('#content').empty();
         $('#artForm')[0].reset();
-        order.getList();
+        article.getList();
     });
 
     return false;

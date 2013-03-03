@@ -17,18 +17,24 @@ Customer.prototype.saveCustomer = function () {
         surname: $('#custSurname').val(),
         street: $('#custStreet').val(),
         place: $('#custPlace').val(),
-        country: $('#custCountry').val()
+        country: $('#custCountry').val(),
+        customerId: $('#customerId').val()
     };
+
+    var type = 'POST';
+    if ($('#customerId').val()) {
+        type = 'PUT';
+    }
 
     $.ajax({
         url: '/customers',
-        type: 'POST',
+        type: type,
         data: values
     }).done(function (res) {
         $('div.popup').hide();
         $('#content').empty();
         $('#custForm')[0].reset();
-        order.getList();
+        customer.getList();
     });
 };
 
@@ -101,8 +107,35 @@ Customer.prototype.tableRow = function (table, data) {
         '<td>'+data.street+'</td>'+
         '<td>'+data.place+'</td>'+
         '<td>'+data.country+'</td>'+
-        '<td>edit</td>'+
-        '<td>delete</td>'+
+        '<td><a onclick="customer.edit('+data.rowid+')">edit</a></td>'+
+        '<td><a onclick="customer.delete('+data.rowid+')">delete</a></td>'+
         '</tr>');
     table.append(order);
 };
+
+Customer.prototype.edit = function (id) {
+    $('div#customer').show();
+
+    $.ajax({
+        url: '/customers/id/' + id,
+        type: 'GET'
+    }).done(function (data) {
+        $('#customerId').val(data.rowid);
+        $('#custName').val(data.name);
+        $('#custFirstname').val(data.firstname);
+        $('#custSurname').val(data.surname);
+        $('#custStreet').val(data.street);
+        $('#custPlace').val(data.place);
+        $('#custCountry').val(data.country);
+    });
+};
+
+Customer.prototype.delete = function (id) {
+    $.ajax({
+        url: '/customers/id/' + id,
+        type: 'DELETE'
+    }).done(function (data) {
+        $('#content').empty();
+        customer.getList();
+    });
+}

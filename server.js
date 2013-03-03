@@ -107,15 +107,37 @@ app.post('/customers', function (req, res) {
     });
 });
 
-app.put('/customers', function (req, res) {
-    res.end('lala');
-});
-
 app.get('/customers/id/:id', function (req, res) {
     var id = req.url.split('/')[3];
 
     db.get('SELECT rowid, * FROM customer WHERE rowid = ?', id, function (err, data) {
         res.send(data);
+    });
+});
+
+app.put('/customers', function (req, res) {
+    var data = '';
+
+    req.on('data', function (chunk) {
+        data += chunk;
+    });
+
+    req.on('end', function () {
+        var values = require('querystring').parse(data);
+        console.log(values);
+
+        db.run('UPDATE customer SET name = ?, firstname = ?, surname = ?, street = ?, place = ?, country = ? WHERE rowid = ?', values.name, values.firstname, values.surname, values.street, values.place, values.country, values.customerId, function (err) {
+            if (err) console.log(err);
+            res.end('success');
+        });
+    });
+});
+
+app.delete('/customers/id/:id', function (req, res) {
+    var id = req.url.split('/')[3];
+
+    db.run('DELETE FROM customer WHERE rowid = ?', id, function (err, data) {
+        res.send('success');
     });
 });
 
