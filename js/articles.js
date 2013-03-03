@@ -14,12 +14,18 @@ Article.prototype.handleFormSubmit = function (e) {
 
     var values = {
         name: $('#artName').val(),
-        price: $('#artPrice').val()
+        price: $('#artPrice').val(),
+        articleId: $('#articleId').val()
     };
+
+    var type = 'POST';
+    if ($('#articleId').val()) {
+        type = 'PUT';
+    }
 
     $.ajax({
         url: '/articles',
-        type: 'POST',
+        type: type,
         data: values
     }).done(function (res) {
         $('div.popup').hide();
@@ -75,6 +81,31 @@ Article.prototype.tableRow = function (table, data) {
     var order = $('<tr>'+
         '<td>'+data.name+'</td>'+
         '<td>'+data.price+'</td>'+
+        '<td><a onclick="article.edit('+data.rowid+')">edit</a></td>'+
+        '<td><a onclick="article.delete('+data.rowid+')">delete</a></td>'+
         '</tr>');
     table.append(order);
 };
+
+Article.prototype.edit = function (id) {
+    $('div#article').show();
+
+    $.ajax({
+        url: '/articles/id/' + id,
+        type: 'GET'
+    }).done(function (data) {
+        $('#articleId').val(data.rowid);
+        $('#artName').val(data.name);
+        $('#artPrice').val(data.price);
+    });
+};
+
+Article.prototype.delete = function (id) {
+    $.ajax({
+        url: '/articles/id/' + id,
+        type: 'DELETE'
+    }).done(function (data) {
+        $('#content').empty();
+        article.getList();
+    });
+}

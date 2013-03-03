@@ -57,6 +57,32 @@ app.get('/articles/id/:id', function (req, res) {
     });
 });
 
+app.put('/articles', function (req, res) {
+    var data = '';
+
+    req.on('data', function (chunk) {
+        data += chunk;
+    });
+
+    req.on('end', function () {
+        var values = require('querystring').parse(data);
+        console.log(values);
+
+        db.run('UPDATE article SET name = ?, price = ? WHERE rowid = ?', values.name, values.price, values.articleId, function (err) {
+            if (err) console.log(err);
+            res.end('success');
+        });
+    });
+});
+
+app.delete('/articles/id/:id', function (req, res) {
+    var id = req.url.split('/')[3];
+
+    db.run('DELETE FROM article WHERE rowid = ?', id, function (err, data) {
+        res.send('success');
+    });
+});
+
 app.get('/customers', function (req, res) {
     db.all('SELECT rowid, * FROM `customer`', function (err, rows) {
         if (err) throw err;
