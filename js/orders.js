@@ -122,8 +122,22 @@ Order.prototype.orderRow = function (table, data) {
         '<td>'+(data.price /100)+'</td>'+
         '<td>'+data.amount+'</td>'+
         '<td>'+(data.price/100*data.amount)+'</td>'+
-        '<td>edit</td>'+
-        '<td>delete</td>'+
+        '<td><a onclick="order.edit('+data.rowid+')">edit</a></td>'+
+        '<td><a onclick="">delete</a></td>'+
         '</tr>');
     table.append(order);
+};
+
+Order.prototype.edit = function (id) {
+    $('div#order').show();
+
+    $.ajax({
+        url: '/orders/id/' + id,
+        type: 'GET'
+    }).done(function (data) {
+        $('#orderId').val(data.rowid);
+        $('#orderArt').val(data.article_id);
+        $('#orderCust').val(data.customer_id);
+        $('#orderAmount').val(data.amount);
+    });
 };
