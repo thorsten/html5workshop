@@ -1,6 +1,12 @@
 var Order = function () {
     $('#newOrder').on('click', this.newOrder.bind(this));
     $('#manageOrder').on('click', this.getList.bind(this));
+
+    $('#orderCancel').on('click', function () {
+        $('div#order').toggle();
+    });
+
+    $('#orderForm').on('submit', this.handleFormSubmit.bind(this));
 };
 
 Order.prototype.newOrder = function () {
@@ -14,6 +20,29 @@ Order.prototype.newOrder = function () {
 
     // fill dropdown
     // handle slider
+};
+
+Order.prototype.handleFormSubmit = function (e) {
+    e.preventDefault();
+
+    var values = {
+        article: $('#orderArt').val(),
+        customer: $('#orderCust').val(),
+        amount: $('#orderAmount').val()
+    };
+
+    $.ajax({
+        url: '/orders',
+        type: 'POST',
+        data: values
+    }).done(function (res) {
+            $('div.popup').hide();
+            $('#content').empty();
+            $('#orderForm')[0].reset();
+            order.getList();
+        });
+
+    return false;
 };
 
 Order.prototype.getList = function () {
@@ -34,6 +63,7 @@ Order.prototype.getList = function () {
                 table = this.startCustomerSection(contentBox, data[i]);
             }
             if (custid !== data[i].customer_id) {
+                custid = data[i].customer_id;
                 this.endCustomerSection(contentBox, table);
                 table = this.startCustomerSection(contentBox, data[i]);
             }

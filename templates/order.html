@@ -1,16 +1,23 @@
 <div id="order" class="hidden popup">
     <h1>ORDER</h1>
-    <form>
+    <form id="orderForm">
         <div>
             Artikel:
-            <select>
-                <option>Art1</option>
-                <option>Art2</option>
+            <select id="orderArt">
+                <option value="1">Art1</option>
+                <option value="2">Art2</option>
+            </select>
+        </div>
+        <div>
+            Kunde:
+            <select id="orderCust">
+                <option value="1">Cust1</option>
+                <option value="2">Cust2</option>
             </select>
         </div>
         <div>
             Menge:
-            <input type="range" min="0" max="100" value="0" />
+            <input type="range" min="0" max="100" value="0" id="orderAmount" />
         </div>
         <div>
             Preis:
@@ -19,6 +26,12 @@
         <div>
             Gesamtpreis:
             <output id="articleTotalPrice"></output>
+        </div>
+        <div>
+            <div>
+                <input type="submit" id="orderSave" />
+                <button id="orderCancel">Abbrechen</button>
+            </div>
         </div>
     </form>
 </div>

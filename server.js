@@ -44,7 +44,6 @@ app.post('/articles', function (req, res) {
 
         db.run('INSERT INTO article (name, price) VALUES ( ?, ?)', values.name, values.price, function (err) {
             if (err) console.log(err);
-            console.log(values);
             res.end('success');
         });
     });
@@ -69,7 +68,6 @@ app.post('/customers', function (req, res) {
 
         db.run('INSERT INTO customer (name, firstname, surname, street, place, country) VALUES ( ?, ?, ?, ?, ?, ? )', values.name, values.firstname, values.surname, values.street, values.place, values.country, function (err) {
             if (err) console.log(err);
-            console.log(values);
             res.end('success');
         });
     });
@@ -83,6 +81,25 @@ app.get('/orders', function (req, res) {
     db.all('select *, customer.name AS cname from orders LEFT JOIN customer ON customer.rowid = orders.customer_id LEFT JOIN article ON article.rowid = orders.article_id order by customer.rowid', function (err, rows) {
         if (err) throw err;
         res.send(rows);
+    });
+});
+
+app.post('/orders', function (req, res) {
+    var data = '';
+
+    req.on('data', function (chunk) {
+        data += chunk;
+    });
+
+    req.on('end', function () {
+        var values = require('querystring').parse(data);
+
+        console.log(values);
+
+        db.run('INSERT INTO orders (article_id, customer_id, amount) VALUES ( ?, ?, ?)', values.article, values.customer, values.amount, function (err) {
+            if (err) console.log(err);
+            res.end('success');
+        });
     });
 });
 
