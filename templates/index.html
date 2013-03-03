@@ -11,9 +11,70 @@
     <script src="/js/orders.js"></script>
 
     <script>
+        var int;
+
         $(document).ready(function () {
+            "use strict";
+
             var order = new Order();
             order.getList();
+
+            $('#custCancel').on('click', function () {
+                $('div#customer').toggle();
+            });
+            $('#custForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var progress = function () {
+                    var value = $('#progress').val();
+                    if (value <= 99) {
+                        value += 1;
+                    } else {
+                        value = 0;
+                        clearInterval(int);
+                        saveCustomer();
+                    }
+                    $('#progress').val(value);
+                }
+                int = setInterval(progress, 20);
+
+                return false;
+            });
+
+            var saveCustomer = function () {
+                var values = {
+                    name: $('#custName').val(),
+                    firstname: $('#custFirstname').val(),
+                    surname: $('#custSurname').val(),
+                    street: $('#custStreet').val(),
+                    place: $('#custPlace').val(),
+                    country: $('#custCountry').val()
+                };
+
+                $.ajax({
+                    url: '/customers',
+                    type: 'POST',
+                    data: values
+                }).done(function (res) {
+                    $('div.popup').hide();
+                    $('#content').empty();
+                    order.getList();
+                });
+            };
+
+            // update
+
+            // delete
+
+
+            $('#fullScreen').on('click', function (e) {
+                var el = document.documentElement,
+                    requestFullScreen = el.requestFullScreen ||
+                            el.webkitRequestFullScreen ||
+                            el.mozRequestFullScreen;
+
+                requestFullScreen.call(el);
+            });
         });
     </script>
 
@@ -23,12 +84,24 @@
             display: none;
         }
 
+        .popup {
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            height: 400px;
+            width: 400px;
+            background: #add8e6;
+        }
+
     </style>
 
 
 </head>
 
 <body>
+
+    <button id="fullScreen">Full Screen</button>
+
 
     <h1>ACME - Auftragsverwaltung</h1>
 
@@ -40,18 +113,50 @@
         <input type="button" value="neuer Artikel" id="newArticle" />
     </aside>
 
-<div id="customer" class="hidden">
-    <form>
-
+<div id="customer" class="hidden popup">
+    <form id="custForm">
+        <h1>CUSTOMER</h1>
+        <div>
+            Bezeichnung: <input type="text" id="custName">
+        </div>
+        <div>
+            Vorname: <input type="text" id="custFirstname">
+        </div>
+        <div>
+            Nachname: <input type="text" id="custSurname">
+        </div>
+        <div>
+            Straße: <input type="text" id="custStreet">
+        </div>
+        <div>
+            Ort: <input type="text" id="custPlace">
+        </div>
+        <div>
+            Land: <input type="text" id="custCountry">
+        </div>
+        <div>
+            <input type="submit" id="custSave" />
+            <button id="custCancel">Abbrechen</button>
+        </div>
     </form>
+    <progress value="0" max="100" id="progress"></progress>
 </div>
-<div id="order" class="hidden">
-   <form>
 
-   </form>
-</div>
-<div id="article" class="hidden" style="position: absolute; top: 100px; left: 100px; height: 400px; width: 400px; background: #add8e6;">
+<div id="article" class="hidden popup">
     <h1>ARTICLE</h1>
+    <div>
+        Bezeichnung <input type="text" />
+    </div>
+    <div>
+        Preis <input type="number" />
+    </div>
+    <div>
+        <button>speichern</button>
+    </div>
+</div>
+
+<div id="order" class="hidden popup">
+    <h1>ORDER</h1>
     <form>
         <div>
             Artikel:
@@ -75,8 +180,13 @@
     </form>
 </div>
 
+<div>
 
 
+
+
+
+</div>
 
 
 </body>

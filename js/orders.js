@@ -16,7 +16,7 @@ Order.prototype.newOrder = function () {
     $.ajax({
         url: '/articles'
     }).done(function (data) {
-        
+
     });
 
 
@@ -52,7 +52,6 @@ Order.prototype.getList = function () {
                     table = this.startCustomerSection(contentBox, data[i]);
                 }
 
-                // insert row
                 this.addOrder(table, data[i]);
 
             }

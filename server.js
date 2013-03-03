@@ -22,10 +22,32 @@ app.get('/articles', function (req, res) {
 });
 
 app.get('/customers', function (req, res) {
-    db.all('SELECT rowid, * FROM `customers`', function (err, rows) {
+    db.all('SELECT rowid, * FROM `customer`', function (err, rows) {
         if (err) throw err;
         res.send(rows);
     });
+});
+
+app.post('/customers', function (req, res) {
+    var data = '';
+
+    req.on('data', function (chunk) {
+        data += chunk;
+    });
+
+    req.on('end', function () {
+        var values = require('querystring').parse(data);
+
+        db.run('INSERT INTO customer (name, firstname, surname, street, place, country) VALUES ( ?, ?, ?, ?, ?, ? )', values.name, values.firstname, values.surname, values.street, values.place, values.country, function (err) {
+            if (err) console.log(err);
+            console.log(values);
+            res.end('success');
+        });
+    });
+});
+
+app.put('/customers', function (req, res) {
+    res.end('lala');
 });
 
 app.get('/orders', function (req, res) {
