@@ -1,7 +1,12 @@
-var int;
+var int, customer;
 
 var init = function () {
     "use strict";
+
+    customer = new Customer();
+
+
+
 
     var order = new Order();
     order.getList();

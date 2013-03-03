@@ -1,14 +1,12 @@
 var Order = function () {
-
-    $('#newCustomer').on('click', this.newCustomer.bind(this));
     $('#newOrder').on('click', this.newOrder.bind(this));
+    $('#manageOrder').on('click', this.getList.bind(this));
+
+
     $('#newArticle').on('click', this.newArticle.bind(this));
-
 };
 
-Order.prototype.newCustomer = function () {
-    $('div#customer').css('display', 'block');
-};
+
 
 Order.prototype.newOrder = function () {
     $('div#order').css('display', 'block');
@@ -38,24 +36,26 @@ Order.prototype.getList = function () {
         url: '/orders'
     }).done(function (data) {
 
-            var custid,
-                contentBox = $('#content'),
-                table;
+        var custid,
+            contentBox = $('#content'),
+            table;
 
-            for (var i = 0; i < data.length; i++) {
-                if (!custid) {
-                    custid = data[i].customer_id;
-                    table = this.startCustomerSection(contentBox, data[i]);
-                }
-                if (custid !== data[i].customer_id) {
-                    this.endCustomerSection(contentBox, table);
-                    table = this.startCustomerSection(contentBox, data[i]);
-                }
+        contentBox.empty();
 
-                this.addOrder(table, data[i]);
-
+        for (var i = 0; i < data.length; i++) {
+            if (!custid) {
+                custid = data[i].customer_id;
+                table = this.startCustomerSection(contentBox, data[i]);
             }
-            this.endCustomerSection(contentBox, table);
+            if (custid !== data[i].customer_id) {
+                this.endCustomerSection(contentBox, table);
+                table = this.startCustomerSection(contentBox, data[i]);
+            }
+
+            this.orderRow(table, data[i]);
+
+        }
+        this.endCustomerSection(contentBox, table);
     }.bind(this));
 
 };
@@ -99,13 +99,15 @@ Order.prototype.endCustomerSection = function (content, table) {
     content.append(table);
 };
 
-Order.prototype.addOrder = function (table, data) {
+Order.prototype.orderRow = function (table, data) {
     var order = $('<tr>'+
         '<td>'+data.article_id+'</td>'+
         '<td>'+data.name+'</td>'+
         '<td>'+(data.price /100)+'</td>'+
         '<td>'+data.amount+'</td>'+
         '<td>'+(data.price/100*data.amount)+'</td>'+
+        '<td>edit</td>'+
+        '<td>delete</td>'+
         '</tr>');
     table.append(order);
 };
