@@ -15,8 +15,20 @@ Order.prototype.newOrder = function () {
     $.ajax({
         url: '/articles'
     }).done(function (data) {
-
+        for (var i = 0; i < data.length; i++) {
+            $('#orderArt').append(new Option(data[i].name, data[i].rowid));
+        }
     });
+
+    $.ajax({
+        url: '/customers'
+    }).done(function (data) {
+        for (var i = 0; i < data.length; i++) {
+            $('#orderCust').append(new Option(data[i].name, data[i].rowid));
+        }
+    });
+
+
 
     // fill dropdown
     // handle slider
