@@ -1,4 +1,5 @@
-var Customer = function () {
+var int,
+    Customer = function () {
     $('#newCustomer').on('click', this.newCustomer.bind(this));
     $('#manageCustomer').on('click', this.getList.bind(this));
 
@@ -6,45 +7,47 @@ var Customer = function () {
         $('div#customer').toggle();
     });
 
-    $('#custForm').on('submit', function (e) {
-        e.preventDefault();
+    $('#custForm').on('submit', this.handleFormSubmit.bind(this));
+};
 
-        var progress = function () {
-            var value = $('#progress').val();
-            if (value <= 99) {
-                value += 1;
-            } else {
-                value = 0;
-                clearInterval(int);
-                saveCustomer();
-            }
-            $('#progress').val(value);
-        }
-        int = setInterval(progress, 20);
-
-        return false;
-    });
-
-    var saveCustomer = function () {
-        var values = {
-            name: $('#custName').val(),
-            firstname: $('#custFirstname').val(),
-            surname: $('#custSurname').val(),
-            street: $('#custStreet').val(),
-            place: $('#custPlace').val(),
-            country: $('#custCountry').val()
-        };
-
-        $.ajax({
-            url: '/customers',
-            type: 'POST',
-            data: values
-        }).done(function (res) {
-                $('div.popup').hide();
-                $('#content').empty();
-                order.getList();
-            });
+Customer.prototype.saveCustomer = function () {
+    var values = {
+        name: $('#custName').val(),
+        firstname: $('#custFirstname').val(),
+        surname: $('#custSurname').val(),
+        street: $('#custStreet').val(),
+        place: $('#custPlace').val(),
+        country: $('#custCountry').val()
     };
+
+    $.ajax({
+        url: '/customers',
+        type: 'POST',
+        data: values
+    }).done(function (res) {
+        $('div.popup').hide();
+        $('#content').empty();
+        order.getList();
+    });
+};
+
+Customer.prototype.handleFormSubmit = function (e) {
+    e.preventDefault();
+
+    var progress = function () {
+        var value = $('#progress').val();
+        if (value <= 99) {
+            value += 1;
+        } else {
+            value = 0;
+            clearInterval(int);
+            this.saveCustomer();
+        }
+        $('#progress').val(value);
+    }.bind(this);
+    int = setInterval(progress, 20);
+
+    return false;
 };
 
 Customer.prototype.getList = function () {

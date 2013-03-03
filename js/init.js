@@ -1,4 +1,4 @@
-var int, customer, article, order;
+var customer, article, order;
 
 var init = function () {
     "use strict";
@@ -7,14 +7,6 @@ var init = function () {
     article = new Article();
     order = new Order();
     order.getList();
-
-
-
-
-    // update
-
-    // delete
-
 
     $('#fullScreen').on('click', function (e) {
         var el = document.documentElement,
