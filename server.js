@@ -9,8 +9,19 @@ app.get('/', function(req, res){
 });
 
 app.get('/index.html', function (req, res) {
-    fs.readFile(__dirname + '/templates/index.html', 'utf8', function(err, text){
-        res.send(text);
+
+    var order = fs.readFileSync(__dirname + '/templates/order.html'),
+        article = fs.readFileSync(__dirname + '/templates/article.html'),
+        customer = fs.readFileSync(__dirname + '/templates/customer.html');
+
+
+    fs.readFile(__dirname + '/templates/index.html', 'utf8', function(err, text) {
+
+        var content = text.replace('${order}', order).
+            replace('${article}', article).
+            replace('${customer}', customer);
+
+        res.send(content);
     });
 });
 
