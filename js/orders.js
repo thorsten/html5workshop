@@ -7,10 +7,15 @@ var Order = function () {
     });
 
     $('#orderForm').on('submit', this.handleFormSubmit.bind(this));
+
+    $('#orderAmount').on('change', function (e) {
+        $('#dispAmount').html($('#orderAmount').val());
+    });
 };
 
-Order.prototype.newOrder = function () {
-    $('div#order').css('display', 'block');
+Order.prototype.rebuildDropdowns = function () {
+    $('#orderArt').empty();
+    $('#ordercust').empty();
 
     $.ajax({
         url: '/articles'
@@ -27,11 +32,12 @@ Order.prototype.newOrder = function () {
             $('#orderCust').append(new Option(data[i].name, data[i].rowid));
         }
     });
+}
 
 
-
-    // fill dropdown
-    // handle slider
+Order.prototype.newOrder = function () {
+    $('div#order').css('display', 'block');
+    this.rebuildDropdowns();
 };
 
 Order.prototype.handleFormSubmit = function (e) {
@@ -57,6 +63,7 @@ Order.prototype.handleFormSubmit = function (e) {
             $('div.popup').hide();
             $('#content').empty();
             $('#orderForm')[0].reset();
+            $('#dispAmount').html('0');
             order.getList();
         });
 
@@ -148,6 +155,7 @@ Order.prototype.orderRow = function (table, data) {
 
 Order.prototype.edit = function (id) {
     $('div#order').show();
+    this.rebuildDropdowns();
 
     $.ajax({
         url: '/orders/id/' + id,
@@ -157,6 +165,7 @@ Order.prototype.edit = function (id) {
         $('#orderArt').val(data.article_id);
         $('#orderCust').val(data.customer_id);
         $('#orderAmount').val(data.amount);
+        $('#dispAmount').html(data.amount);
     });
 };
 
