@@ -15,7 +15,8 @@ Article.prototype.handleFormSubmit = function (e) {
     var values = {
         name: $('#artName').val(),
         price: $('#artPrice').val(),
-        articleId: $('#articleId').val()
+        articleId: $('#articleId').val(),
+        description: $('#artDescription').html()
     };
 
     var type = 'POST';
@@ -31,6 +32,7 @@ Article.prototype.handleFormSubmit = function (e) {
         $('div.popup').hide();
         $('#content').empty();
         $('#artForm')[0].reset();
+        $('#artDescription').html('');
         article.getList();
     });
 
@@ -97,6 +99,7 @@ Article.prototype.edit = function (id) {
         $('#articleId').val(data.rowid);
         $('#artName').val(data.name);
         $('#artPrice').val(data.price);
+        $('#artDescription').html(data.description);
     });
 };
 

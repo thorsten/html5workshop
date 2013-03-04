@@ -68,7 +68,7 @@ app.put('/articles', function (req, res) {
         var values = require('querystring').parse(data);
         console.log(values);
 
-        db.run('UPDATE article SET name = ?, price = ? WHERE rowid = ?', values.name, values.price, values.articleId, function (err) {
+        db.run('UPDATE article SET name = ?, price = ?, description = ? WHERE rowid = ?', values.name, values.price, values.description, values.articleId, function (err) {
             if (err) console.log(err);
             res.end('success');
         });
