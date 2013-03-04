@@ -11,6 +11,37 @@ var Order = function () {
     $('#orderAmount').on('change', function (e) {
         $('#dispAmount').html($('#orderAmount').val());
     });
+
+    $('#localstorage').on('click', function () {
+        if ($('#localstorage').html() == 'localstorage') {
+            $('#localstorage').html('remote');
+            this.mode = 'local';
+            this.fillLocalstorage();
+        } else {
+            $('#localstorage').html('localstorage');
+            this.mode = 'remote';
+            this.syncLocalstorage();
+            localStorage.clear();
+        }
+    }.bind(this));
+};
+
+Order.prototype.mode = 'remote';
+
+
+Order.prototype.fillLocalstorage = function () {
+    $.ajax({
+        url: '/orders'
+    }).done(function (data) {
+        for (var i = 0; i < data.length; i++) {
+            localStorage.setItem(data[i].rowid, JSON.stringify(data[i]));
+        }
+        this.renderList(localStorage);
+    }.bind(this));
+};
+
+Order.prototype.syncLocalstorage = function () {
+
 };
 
 Order.prototype.rebuildDropdowns = function () {
@@ -18,7 +49,8 @@ Order.prototype.rebuildDropdowns = function () {
     $('#ordercust').empty();
 
     $.ajax({
-        url: '/articles'
+        url: '/articles',
+        async: false
     }).done(function (data) {
         for (var i = 0; i < data.length; i++) {
             $('#orderArt').append(new Option(data[i].name, data[i].rowid));
@@ -43,63 +75,110 @@ Order.prototype.newOrder = function () {
 Order.prototype.handleFormSubmit = function (e) {
     e.preventDefault();
 
-    var values = {
-        article: $('#orderArt').val(),
-        customer: $('#orderCust').val(),
-        amount: $('#orderAmount').val(),
-        orderId: $('#orderId').val()
-    };
 
-    var type = 'POST';
-    if ($('#orderId').val()) {
-        type = 'PUT';
-    }
 
-    $.ajax({
-        url: '/orders',
-        type: type,
-        data: values
-    }).done(function (res) {
+    if (this.mode == 'local') {
+        var orderId = $('#orderId').val();
+        if ($('#orderId').val() == '') {
+            var orderId = 'new' + localStorage.length;
+        }
+
+        $.ajax({url: '/articles/id/' + $('#orderArt').val()}).done(function (art) {
+            $.ajax({url: '/customers/id/' + $('#orderCust').val()}).done(function (cust) {
+                var values = {
+                    "customer_id": $('#orderCust').val(),
+                    "article_id":$('#orderArt').val(),
+                    "amount":$('#orderAmount').val(),
+                    "name":art.name,
+                    "firstname":cust.firstname,
+                    "surname":cust.surname,
+                    "street":cust.street,
+                    "place":cust.place,
+                    "country":cust.country,
+                    "price":art.price,
+                    "description":art.description,
+                    "rowid":orderId,
+                    "cname":cust.name
+                }
+
+                localStorage.setItem(orderId, JSON.stringify(values));
+                $('div.popup').hide();
+                $('#content').empty();
+                $('#orderForm')[0].reset();
+                $('#dispAmount').html('0');
+                order.renderList(localStorage);
+            });
+        });
+    } else {
+        var type = 'POST';
+        if ($('#orderId').val()) {
+            type = 'PUT';
+        }
+
+        var values = {
+            article: $('#orderArt').val(),
+            customer: $('#orderCust').val(),
+            amount: $('#orderAmount').val(),
+            orderId: $('#orderId').val()
+        };
+
+        $.ajax({
+            url: '/orders',
+            type: type,
+            data: values
+        }).done(function (res) {
             $('div.popup').hide();
             $('#content').empty();
             $('#orderForm')[0].reset();
             $('#dispAmount').html('0');
             order.getList();
         });
+    }
+
 
     return false;
 };
 
-Order.prototype.getList = function () {
+Order.prototype.renderList = function (data) {
+    var custid,
+        contentBox = $('#content'),
+        table, tempData;
 
+    contentBox.empty();
+
+    for (var i in data) {
+        tempData = data[i];
+        if (this.mode == 'local') {
+            if (data.getItem(i) == 'delete') {
+                continue;
+            }
+            tempData = JSON.parse(data.getItem(i));
+        }
+
+        if (!custid) {
+            custid = tempData.customer_id;
+            table = this.startCustomerSection(contentBox, tempData);
+        }
+
+        if (custid != tempData.customer_id) {
+            custid = tempData.customer_id;
+            this.endCustomerSection(contentBox, table);
+            table = this.startCustomerSection(contentBox, tempData);
+        }
+
+        this.orderRow(table, tempData);
+
+    }
+    this.endCustomerSection(contentBox, table);
+};
+
+Order.prototype.getList = function () {
     $.ajax({
         url: '/orders'
     }).done(function (data) {
-
-        var custid,
-            contentBox = $('#content'),
-            table;
-
-        contentBox.empty();
-
-        for (var i = 0; i < data.length; i++) {
-            if (!custid) {
-                custid = data[i].customer_id;
-                table = this.startCustomerSection(contentBox, data[i]);
-            }
-            if (custid !== data[i].customer_id) {
-                custid = data[i].customer_id;
-                this.endCustomerSection(contentBox, table);
-                table = this.startCustomerSection(contentBox, data[i]);
-            }
-
-            this.orderRow(table, data[i]);
-
-        }
-        this.endCustomerSection(contentBox, table);
+        this.renderList(data);
     }.bind(this));
-
-};
+}
 
 Order.prototype.startCustomerSection = function (el, data) {
     this.writeCustomerName(el, data);
@@ -141,8 +220,13 @@ Order.prototype.endCustomerSection = function (content, table) {
 };
 
 Order.prototype.orderRow = function (table, data) {
+    var tdClass = '';
+    if (this.mode == 'local') {
+        tdClass = ' class="colorful"';
+    }
+
     var order = $('<tr>'+
-        '<td>'+data.article_id+'</td>'+
+        '<td'+tdClass+'>'+data.article_id+'</td>'+
         '<td>'+data.name+'</td>'+
         '<td>'+(data.price /100)+'</td>'+
         '<td>'+data.amount+'</td>'+
@@ -157,24 +241,38 @@ Order.prototype.edit = function (id) {
     $('div#order').show();
     this.rebuildDropdowns();
 
-    $.ajax({
-        url: '/orders/id/' + id,
-        type: 'GET'
-    }).done(function (data) {
+    if (this.mode == 'local') {
+        var data = JSON.parse(localStorage.getItem(id));
         $('#orderId').val(data.rowid);
         $('#orderArt').val(data.article_id);
         $('#orderCust').val(data.customer_id);
         $('#orderAmount').val(data.amount);
         $('#dispAmount').html(data.amount);
-    });
+    } else {
+        $.ajax({
+            url: '/orders/id/' + id,
+            type: 'GET'
+        }).done(function (data) {
+            $('#orderId').val(data.rowid);
+            $('#orderArt').val(data.article_id);
+            $('#orderCust').val(data.customer_id);
+            $('#orderAmount').val(data.amount);
+            $('#dispAmount').html(data.amount);
+        });
+    }
 };
 
 Order.prototype.delete = function (id) {
-    $.ajax({
-        url: '/orders/id/' + id,
-        type: 'DELETE'
-    }).done(function (data) {
-        $('#content').empty();
-        order.getList();
-    });
+    if (this.mode == 'local') {
+        localStorage.setItem(id, 'delete');
+        order.renderList(localStorage);
+    } else {
+        $.ajax({
+            url: '/orders/id/' + id,
+            type: 'DELETE'
+        }).done(function (data) {
+            $('#content').empty();
+            order.getList();
+        });
+    }
 }
