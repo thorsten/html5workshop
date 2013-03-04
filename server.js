@@ -223,7 +223,6 @@ app.delete('/orders/id/:id', function (req, res) {
 app.use("/js", express.static(__dirname + '/js'));
 app.use("/css", express.static(__dirname + '/css'));
 
-
 app.listen(8080);
 
 
@@ -233,3 +232,4 @@ app.listen(8080);
 wss.on('connection', function(ws) {
     socket.push(ws);
 });
+

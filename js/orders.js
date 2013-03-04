@@ -240,14 +240,13 @@ Order.prototype.writeCustomerName = function (el, data) {
 
 Order.prototype.beginTable = function () {
 
-    var header = $('<table cellspacing="0" border="1"><tr>'+
+    var header = $('<table cellspacing="0" border="1" class="table table-striped"><tr>'+
         '<td>Artikelnummer</td>'+
         '<td>Artikelbezeichnung</td>'+
         '<td>Preis/Stück</td>'+
         '<td>Menge</td>'+
         '<td>Gesamtpreis</td>'+
         '</tr></table>');
-
 
     var table = $(header);
     return table;
