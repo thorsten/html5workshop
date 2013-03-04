@@ -2,7 +2,10 @@ var fs = require('fs'),
     sqlite3 = require('sqlite3'),
     db = new sqlite3.Database('database/workshop.db'),
     express = require('express'),
-    app = new express();
+    app = new express(),
+    WebSocketServer = require('ws').Server,
+    wss = new WebSocketServer({port: 8181}),
+    socket = [];
 
 app.get('/', function(req, res){
     res.send('lala');
@@ -52,6 +55,10 @@ app.post('/articles', function (req, res) {
         db.run('INSERT INTO article (name, price) VALUES ( ?, ?)', values.name, values.price, function (err) {
             if (err) console.log(err);
             res.end('success');
+
+            for (var i = 0; i < socket.length; i++) {
+                socket[i].send('refetch');
+            }
         });
     });
 });
@@ -78,6 +85,10 @@ app.put('/articles', function (req, res) {
         db.run('UPDATE article SET name = ?, price = ?, description = ? WHERE rowid = ?', values.name, values.price, values.description, values.articleId, function (err) {
             if (err) console.log(err);
             res.end('success');
+
+            for (var i = 0; i < socket.length; i++) {
+                socket[i].send('refetch');
+            }
         });
     });
 });
@@ -218,11 +229,7 @@ app.listen(8080);
 
 // websockets
 
-var WebSocketServer = require('ws').Server
-    , wss = new WebSocketServer({port: 8181});
+
 wss.on('connection', function(ws) {
-    ws.on('message', function(message) {
-        console.log('received: %s', message);
-    });
-    ws.send('something');
+    socket.push(ws);
 });

@@ -1,4 +1,4 @@
-var customer, article, order;
+var customer, article, order, connection;
 
 var init = function () {
     "use strict";
@@ -20,14 +20,12 @@ var init = function () {
 
     window.WebSocket = window.WebSocket || window.MozWebSocket;
 
-    var connection = new WebSocket('ws://workshop.basti.dev:8181');
-
-    connection.onopen = function () {
-        connection.send('lala');
-    };
+    connection = new WebSocket('ws://workshop.basti.dev:8181');
 
     connection.onmessage = function (data) {
-        console.log(data);
+        if (data.data == 'refetch') {
+            article.getList();
+        }
     }
 
 };
