@@ -17,7 +17,6 @@ app.get('/offline.manifest', function (req, res) {
 });
 
 app.get('/index.html', function (req, res) {
-
     var order = fs.readFileSync(__dirname + '/templates/order.html'),
         article = fs.readFileSync(__dirname + '/templates/article.html'),
         customer = fs.readFileSync(__dirname + '/templates/customer.html');
