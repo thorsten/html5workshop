@@ -8,6 +8,14 @@ app.get('/', function(req, res){
     res.send('lala');
 });
 
+
+app.get('/offline.manifest', function (req, res) {
+    fs.readFile(__dirname + '/offline.manifest', 'utf8', function(err, text) {
+        res.setHeader('Content-Type', 'text/cache-manifest');
+        res.send(text);
+    });
+});
+
 app.get('/index.html', function (req, res) {
 
     var order = fs.readFileSync(__dirname + '/templates/order.html'),

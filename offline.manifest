@@ -1,0 +1,10 @@
+CACHE MANIFEST
+#This is a comment
+
+CACHE
+index.html
+js/articles.js
+js/customers.js
+js/init.js
+js/jquery.js
+js/orders.js
