@@ -41,7 +41,9 @@ Order.prototype.fillLocalstorage = function () {
 };
 
 Order.prototype.syncLocalstorage = function () {
-
+    localStorage.clear();
+    this.mode = 'remote';
+    this.getList();
 };
 
 Order.prototype.rebuildDropdowns = function () {
@@ -75,12 +77,10 @@ Order.prototype.newOrder = function () {
 Order.prototype.handleFormSubmit = function (e) {
     e.preventDefault();
 
-
-
     if (this.mode == 'local') {
         var orderId = $('#orderId').val();
         if ($('#orderId').val() == '') {
-            var orderId = 'new' + localStorage.length;
+            orderId = 'new' + (localStorage.length + 1);
         }
 
         $.ajax({url: '/articles/id/' + $('#orderArt').val()}).done(function (art) {
@@ -98,7 +98,12 @@ Order.prototype.handleFormSubmit = function (e) {
                     "price":art.price,
                     "description":art.description,
                     "rowid":orderId,
-                    "cname":cust.name
+                    "cname":cust.name,
+                    "edit": false
+                };
+
+                if ($('#orderId').val() != '') {
+                    values.edit = true;
                 }
 
                 localStorage.setItem(orderId, JSON.stringify(values));
@@ -231,8 +236,8 @@ Order.prototype.orderRow = function (table, data) {
         '<td>'+(data.price /100)+'</td>'+
         '<td>'+data.amount+'</td>'+
         '<td>'+(data.price/100*data.amount)+'</td>'+
-        '<td><a onclick="order.edit('+data.rowid+')">edit</a></td>'+
-        '<td><a onclick="order.delete('+data.rowid+')">delete</a></td>'+
+        '<td><a onclick="order.edit(\''+data.rowid+'\')">edit</a></td>'+
+        '<td><a onclick="order.delete(\''+data.rowid+'\')">delete</a></td>'+
         '</tr>');
     table.append(order);
 };
