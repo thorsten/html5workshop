@@ -81,7 +81,7 @@ Customer.prototype.newCustomer = function () {
 };
 
 Customer.prototype.beginTable = function () {
-    var header = $('<table cellspacing="0" border="1"><tr>'+
+    var header = $('<table cellspacing="0" border="1" class="table table-striped"><tr>'+
         '<td>Name</td>'+
         '<td>Vorname</td>'+
         '<td>Nachname</td>'+
