@@ -3,22 +3,22 @@
         <h1>CUSTOMER</h1>
         <input type="hidden" id="customerId" />
         <div>
-            Bezeichnung: <input type="text" id="custName">
+            Bezeichnung: <input type="text" id="custName" name="custName" required autofocus placeholder="Name">
         </div>
         <div>
-            Vorname: <input type="text" id="custFirstname">
+            Vorname: <input type="text" id="custFirstname" name="custFirstname" pattern="[A-Za-z]*" placeholder="Vorname">
         </div>
         <div>
-            Nachname: <input type="text" id="custSurname">
+            Nachname: <input type="text" id="custSurname" name="custNachname" placeholder="Nachname">
         </div>
         <div>
-            Straße: <input type="text" id="custStreet">
+            Straße: <input type="text" id="custStreet" name="custStreet" placeholder="Straße">
         </div>
         <div>
-            Ort: <input type="text" id="custPlace">
+            Ort: <input type="text" id="custPlace" name="custPlace" placeholder="Ort">
         </div>
         <div>
-            Land: <input type="text" id="custCountry">
+            Land: <input type="text" id="custCountry" name="custCountry" placeholder="Land">
         </div>
         <div>
             <input type="submit" id="custSave" />
