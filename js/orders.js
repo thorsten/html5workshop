@@ -41,8 +41,41 @@ Order.prototype.fillLocalstorage = function () {
 };
 
 Order.prototype.syncLocalstorage = function () {
-    localStorage.clear();
     this.mode = 'remote';
+    var data;
+
+    for (var i in localStorage) {
+        data = localStorage.getItem(i);
+
+        if (data == 'delete') {
+            this.delete(i);
+        }
+
+        data = JSON.parse(data);
+
+        var values = {'customer': data.customer_id, 'article': data.article_id, 'amount': data.amount};
+        if ((i + '').search(/new/) != -1) {
+            $.ajax({
+                url: '/orders',
+                type: 'POST',
+                data: values,
+                async: false
+            });
+            continue;
+        } else if (data.edit) {
+            values.orderId = data.orderId;
+            $.ajax({
+                url: '/orders',
+                type: 'PUT',
+                data: values,
+                async: false
+            });
+            continue;
+        }
+    }
+
+    localStorage.clear();
+
     this.getList();
 };
 
@@ -274,7 +307,8 @@ Order.prototype.delete = function (id) {
     } else {
         $.ajax({
             url: '/orders/id/' + id,
-            type: 'DELETE'
+            type: 'DELETE',
+            async: false
         }).done(function (data) {
             $('#content').empty();
             order.getList();
