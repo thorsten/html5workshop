@@ -16,7 +16,7 @@ Article.prototype.handleFormSubmit = function (e) {
         name: $('#artName').val(),
         price: $('#artPrice').val(),
         articleId: $('#articleId').val(),
-        description: $('#artDescription').html()
+        description: $($('[data-description="article"]')[0]).html()
     };
 
     var type = 'POST';
