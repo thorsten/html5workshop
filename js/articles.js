@@ -60,7 +60,7 @@ Article.prototype.getList = function () {
 };
 
 Article.prototype.newArticle = function () {
-    $('div#article').css('display', 'block');
+    $("#article").removeClass("hidden");
 };
 
 Article.prototype.beginTable = function () {

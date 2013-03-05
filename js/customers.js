@@ -77,7 +77,7 @@ Customer.prototype.getList = function () {
 };
 
 Customer.prototype.newCustomer = function () {
-    $('div#customer').css('display', 'block');
+    $("#customer").removeClass("hidden");
 };
 
 Customer.prototype.beginTable = function () {

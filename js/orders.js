@@ -103,7 +103,7 @@ Order.prototype.rebuildDropdowns = function () {
 
 
 Order.prototype.newOrder = function () {
-    $('div#order').css('display', 'block');
+    $("#order").removeClass("hidden");
     this.rebuildDropdowns();
 };
 
